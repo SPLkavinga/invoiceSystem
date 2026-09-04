@@ -43,7 +43,8 @@ const navItems = [
     icon: BarChart3,
     subItems: [
       { label: "Sales Report", path: "/reports/sales" },
-      { label: "Revenue Report", path: "/reports/revenue" },
+      { label: "Customer Report", path: "/reports/revenue" },
+      { label: "Product Report", path: "/reports/product" },
     ],
   },
   {

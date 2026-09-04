@@ -11,7 +11,9 @@ import ViewProducts from "./Pages/Product/ViewProducts";
 import EditProduct from "./Pages/Product/EditProduct";
 import AddInvoice from "./Pages/Invoice/AddInvoice";
 import ViewInvoice from "./Pages/Invoice/Viewinvoices";
-
+import CustomerReports from "./Pages/Reports/Customerreport ";
+import SalesReports from "./Pages/Reports/Salesreport";
+import ProductReports from "./Pages/Reports/Productreport";
 
 function App() {
   return (
@@ -28,6 +30,10 @@ function App() {
         <Route path="/editproducts/:id" element={<EditProduct />} />
         <Route path="/addinvoice" element={<AddInvoice />} />
         <Route path="/viewinvoices" element={<ViewInvoice />} />
+        <Route path="/reports/sales" element={<SalesReports />} />
+        <Route path="/reports/revenue" element={<CustomerReports />} />
+        <Route path="/reports/product" element={<ProductReports />} />
+        <Route path="*" element={<Navigate to="/" />} />
        {/* <Route
           path="/signup"
           element={

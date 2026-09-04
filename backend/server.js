@@ -9,6 +9,7 @@ const authRoutes = require("./Routs/AuthRouts");
 const customerRoutes = require("./Routs/CustomerRouts");
 const productRoutes = require("./Routs/ProductRoutes");
 const invoiceRoutes = require("./Routs/InvoiceRouts");
+const reportRoutes = require("./Routs/ReportRouts");
 
 require("./db/db");
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/invoices", invoiceRoutes);
+app.use("/api/reports", reportRoutes);
 
 // serve uploaded customer photos, e.g. http://localhost:5000/uploads/customers/169...-photo.jpg
 app.use("/uploads", express.static("uploads"));
