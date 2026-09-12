@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Search, Bell, ChevronDown, User, X, Mail, IdCard, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, Bell, ChevronDown, User, X, Mail, IdCard, ShieldCheck, Package } from "lucide-react";
 
 const PopupStyles = () => (
   <style>{`
@@ -17,6 +18,7 @@ const PopupStyles = () => (
 );
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({ username: "Guest", email: "", idNumber: "" });
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -56,6 +58,14 @@ export default function Navbar() {
 
       {/* Right side */}
       <div className="flex items-center gap-5">
+        <button
+          onClick={() => navigate("/pricing")}
+          className="flex items-center gap-2 text-sm font-semibold text-[#1E40AF] hover:text-[#3B82F6] border border-[#1E40AF]/20 hover:border-[#3B82F6]/30 bg-blue-50/50 hover:bg-blue-50 px-3.5 py-2 rounded-lg transition-colors"
+        >
+          <Package className="w-4 h-4" />
+          Packages
+        </button>
+
         <button className="relative text-slate-500 hover:text-slate-700">
           <Bell className="w-5 h-5" />
           <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#F0B429]" />

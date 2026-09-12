@@ -14,6 +14,7 @@ import ViewInvoice from "./Pages/Invoice/Viewinvoices";
 import CustomerReports from "./Pages/Reports/Customerreport ";
 import SalesReports from "./Pages/Reports/Salesreport";
 import ProductReports from "./Pages/Reports/Productreport";
+import Pricing from "./Pages/Packages/Pricing";
 
 function App() {
   return (
@@ -33,7 +34,9 @@ function App() {
         <Route path="/reports/sales" element={<SalesReports />} />
         <Route path="/reports/revenue" element={<CustomerReports />} />
         <Route path="/reports/product" element={<ProductReports />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="*" element={<Navigate to="/" />} />
+        
        {/* <Route
           path="/signup"
           element={
