@@ -14,11 +14,24 @@ import {
   Save,
   ArrowLeft,
   X,
+  Lock,
 } from "lucide-react";
 import Sidebar from "../../Components/Sidebar";
 import Navbar from "../../Components/Navbar";
 
 const API_URL = "http://localhost:5000/api/products";
+
+const ModalStyles = () => (
+  <style>{`
+    @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .overlay-anim { animation: overlayIn 0.2s ease-out; }
+    .modal-anim { animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+  `}</style>
+);
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -26,6 +39,7 @@ export default function AddProduct() {
   const [imagePreview, setImagePreview] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [limitInfo, setLimitInfo] = useState(null); // { message, limit, current } | null — drives the popup
   const [success, setSuccess] = useState("");
   const fileInputRef = useRef(null);
 
@@ -79,6 +93,12 @@ export default function AddProduct() {
       const data = await res.json();
 
       if (!res.ok) {
+        // the backend flags plan-limit rejections with this code so we can
+        // pop up a dedicated "upgrade your plan" dialog instead of a plain error
+        if (data.code === "PRODUCT_LIMIT_REACHED") {
+          setLimitInfo({ message: data.message, limit: data.limit, current: data.current });
+          return;
+        }
         throw new Error(data.message || "Failed to save product");
       }
 
@@ -95,6 +115,7 @@ export default function AddProduct() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <ModalStyles />
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       <div className={`transition-all duration-300 ${collapsed ? "md:ml-16" : "md:ml-60"}`}>
@@ -392,6 +413,61 @@ export default function AddProduct() {
           </form>
         </main>
       </div>
+
+      {/* Product limit reached — popup */}
+      {limitInfo && (
+        <div
+          className="overlay-anim fixed inset-0 z-50 flex items-center justify-center bg-[#0B1F3A]/50 backdrop-blur-sm px-4"
+          onClick={() => setLimitInfo(null)}
+        >
+          <div
+            className="relative w-full max-w-sm overflow-hidden bg-white shadow-2xl modal-anim rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600" />
+
+            <button
+              onClick={() => setLimitInfo(null)}
+              className="absolute transition-colors top-4 right-4 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-4.5 h-4.5" />
+            </button>
+
+            <div className="p-7">
+              <div className="flex items-center justify-center mb-5 w-14 h-14 rounded-2xl bg-amber-50">
+                <Lock className="w-6 h-6 text-amber-600" />
+              </div>
+
+              <h3 className="text-lg font-semibold text-[#0B1F3A]">Product limit reached</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">{limitInfo.message}</p>
+
+              {limitInfo.limit != null && (
+                <div className="flex items-center justify-between px-4 py-3 mt-4 text-sm rounded-lg bg-slate-50">
+                  <span className="text-slate-500">Current usage</span>
+                  <span className="font-semibold text-[#0B1F3A]">
+                    {limitInfo.current} / {limitInfo.limit} products
+                  </span>
+                </div>
+              )}
+
+              <div className="flex gap-3 mt-7">
+                <button
+                  onClick={() => setLimitInfo(null)}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => navigate("/pricing")}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-amber-600 hover:bg-amber-700 text-white transition-colors"
+                >
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
